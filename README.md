@@ -62,6 +62,10 @@ python finetune.py \
     --devices 1 \
     --batch_size 16 \
     --exp_name all_full
+
+# You can try different pre-trained models by feeding parameters such as
+--model_name espnet/owsm_v3.1_ebf
+--model_name espnet/owsm_v3.2
 ```
 
 ## Model evaluation
