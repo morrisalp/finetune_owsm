@@ -64,7 +64,7 @@ class FinetuneOWSM(LightningModule):
 
         metric_values = defaultdict(list)
         for _, row in df.iterrows():
-            seen = "seen" if row["lang"] in self.unseen_langs else "unseen"
+            seen = "unseen" if row["lang"] in self.unseen_langs else "seen"
             for metric in metrics:
                 for t, l in product([row["task"], "full"], [row["lang"], seen, "all"]):
                     metric_values[f"{metric}_{t}_{l}"].append(row[metric])

@@ -88,3 +88,4 @@ Can specify languages and/or tasks, e.g. `--langs beja1238 --tasks transcription
 * Update installation with missing dependencies and avoid script that corrupts current conda env
 * Add flag for dataloader workers (`--num_workers`) and lower default to avoid errors with too many open files
 * Fix `--langs` and `--tasks` for evaluation.
+* Fix swapped "seen" and "unseen" labels in evaluation output.
