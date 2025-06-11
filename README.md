@@ -20,8 +20,11 @@ Use `download_data.sh` to automaticall download and extract the [Fieldwork datas
 
 ### Installation
 ```sh
-# conda has to be already installed
-bash install.sh
+conda create -p ./envs
+conda activate ./envs
+
+conda install python=3.10 pytorch=2.0 pytorch-cuda=11.8 torchaudio -c pytorch -c nvidia
+pip install -r requirements.txt
 ```
 
 ## Model Training
