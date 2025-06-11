@@ -15,7 +15,11 @@ def main(args):
     # Dataset & Model
     datamodule = FieldworkDataModule(new_tokens=new_tokens, batch_size=1, **args)
     model = FinetuneOWSM.load_from_checkpoint(
-        args["checkpoint_path"], batch_size=1, devices=args["devices"],
+        args["checkpoint_path"],
+        batch_size=1,
+        devices=args["devices"],
+        test_ds_names=list(datamodule.test_ds.keys()),
+        valid_ds_names=list(datamodule.valid_ds.keys()),
     )
     trainer = Trainer(
         accelerator="gpu" if args["devices"] > 0 else "cpu",

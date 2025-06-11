@@ -92,7 +92,6 @@ class FieldworkDataModule(LightningDataModule):
             **kwargs,
         ):
         super().__init__()
-        self.save_hyperparameters()
 
         s2t = Speech2Text.from_pretrained(model_name)
 
@@ -127,11 +126,12 @@ class FieldworkDataModule(LightningDataModule):
         del s2t
 
         self.num_workers = num_workers
+        self.batch_size = batch_size
 
     def train_dataloader(self):
         return DataLoader(
             self.train_ds,
-            batch_size=self.hparams.batch_size,
+            batch_size=self.batch_size,
             shuffle=True,
             num_workers=self.num_workers,
             collate_fn=self.collator_train,
@@ -142,7 +142,7 @@ class FieldworkDataModule(LightningDataModule):
         return [
             DataLoader(
                 ds,
-                batch_size=self.hparams.batch_size,
+                batch_size=self.batch_size,
                 shuffle=False,
                 num_workers=self.num_workers,
                 collate_fn=self.collator_test,

@@ -81,7 +81,10 @@ python evaluate_model.py \
     --checkpoint_path $PATH_TO_CKPT
 ```
 
+Can specify languages and/or tasks, e.g. `--langs beja1238 --tasks transcription`.
+
 ## CHANGELOG: Recent Updates
 
 * Update installation with missing dependencies and avoid script that corrupts current conda env
 * Add flag for dataloader workers (`--num_workers`) and lower default to avoid errors with too many open files
+* Fix `--langs` and `--tasks` for evaluation.

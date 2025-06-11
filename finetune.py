@@ -29,7 +29,6 @@ class FinetuneOWSM(LightningModule):
         **kwargs,
     ):
         super().__init__()
-        self.save_hyperparameters()
 
         self.s2t = Speech2Text.from_pretrained(model_name)
         self.model = self.s2t.s2t_model
@@ -51,6 +50,8 @@ class FinetuneOWSM(LightningModule):
             "cer": CharErrorRate(),
             "sacrebleu": SacreBLEUScore(),
         }
+
+        self.lr = lr
 
     def _log(self, split, key, value, verbose=False, **kwargs):
         if not self.trainer.sanity_checking:
@@ -126,7 +127,7 @@ class FinetuneOWSM(LightningModule):
     def on_test_epoch_start(self):
         self._test_outputs.clear()
 
-    def test_step(self, batch, batch_idx, dataloader_idx):
+    def test_step(self, batch, batch_idx, dataloader_idx=0):
         uids, batch = batch
         assert len(uids) == 1
 
@@ -161,7 +162,7 @@ class FinetuneOWSM(LightningModule):
         self._log_items("test", df, verbose=True).to_csv(Path(self.trainer.log_dir) / "test_metrics.csv")
 
     def configure_optimizers(self):
-        return torch.optim.AdamW(self.parameters(), lr=self.hparams.lr)
+        return torch.optim.AdamW(self.parameters(), lr=self.lr)
 
 
 def main(args):
