@@ -211,6 +211,7 @@ if __name__ == "__main__":
     parser.add_argument("--batch_size", type=int, default=4, help="Batch size for training")
     parser.add_argument("--tasks", type=str, nargs="+", default=["transcription", "underlying", "gloss", "translation"])
     parser.add_argument("--langs", type=str, nargs="+", default=["taba1259", "tond1251", "kach1280", "arta1239", "vera1241", "sanz1248", "sumb1241", "nort2641", "kara1499", "mand1415", "tehr1242", "taul1251", "ainu1240", "even1259", "dolg1241", "kama1378", "selk1253", "komn1238", "sout2856", "apah1238", "teop1238", "jeju1234", "ruul1235", "sumi1235", "beja1238", "kaka1265", "goro1270", "savo1255", "texi1237", "pnar1238", "nngg1234", "arap1274", "port1286", "trin1278", "bora1263", "slav1254", "balk1252"])
+    parser.add_argument("--num_workers", type=int, default=1, help="Number of workers for each dataloader")
 
     # Trainer
     parser.add_argument("--exp_name", type=str, default="test", help="Experiment name (Folder to store the results)")

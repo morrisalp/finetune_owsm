@@ -88,6 +88,7 @@ class FieldworkDataModule(LightningDataModule):
             new_tokens: list[str],
             tasks: list[str],
             langs: list[str],
+            num_workers: int,
             **kwargs,
         ):
         super().__init__()
@@ -125,12 +126,14 @@ class FieldworkDataModule(LightningDataModule):
 
         del s2t
 
+        self.num_workers = num_workers
+
     def train_dataloader(self):
         return DataLoader(
             self.train_ds,
             batch_size=self.hparams.batch_size,
             shuffle=True,
-            num_workers=4,
+            num_workers=self.num_workers,
             collate_fn=self.collator_train,
             persistent_workers=True,
         )
@@ -141,7 +144,7 @@ class FieldworkDataModule(LightningDataModule):
                 ds,
                 batch_size=self.hparams.batch_size,
                 shuffle=False,
-                num_workers=4,
+                num_workers=self.num_workers,
                 collate_fn=self.collator_test,
                 persistent_workers=True,
             )
@@ -154,7 +157,7 @@ class FieldworkDataModule(LightningDataModule):
                 ds,
                 batch_size=1,
                 shuffle=False,
-                num_workers=4,
+                num_workers=self.num_workers,
                 collate_fn=self.collator_test,
             )
             for ds in self.test_ds.values()
