@@ -80,3 +80,8 @@ python evaluate_model.py \
     --devices 1 \
     --checkpoint_path $PATH_TO_CKPT
 ```
+
+## CHANGELOG: Recent Updates
+
+* Update installation with missing dependencies and avoid script that corrupts current conda env
+* Add flag for dataloader workers (`--num_workers`) and lower default to avoid errors with too many open files
