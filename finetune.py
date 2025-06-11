@@ -26,6 +26,7 @@ class FinetuneOWSM(LightningModule):
         lr: float,
         new_tokens: list[str],
         new_tokens_initialize: int = None,
+        log_examples: bool = False,
         **kwargs,
     ):
         super().__init__()
@@ -52,6 +53,7 @@ class FinetuneOWSM(LightningModule):
         }
 
         self.lr = lr
+        self.log_examples = log_examples
 
     def _log(self, split, key, value, verbose=False, **kwargs):
         if not self.trainer.sanity_checking:
@@ -131,6 +133,11 @@ class FinetuneOWSM(LightningModule):
         uids, batch = batch
         assert len(uids) == 1
 
+        # Extract audio filename from uid
+        # uid format: "00000123_filename.wav" (cf. FieldworkDataset.__getitem__ )
+        assert "_" in uids[0]
+        audio_filename = uids[0].split("_", 1)[1]
+
         lang_id, task_id, *text_ids = batch["text"][0]
         lang_tok = self.model.token_list[lang_id]
         task_tok = self.model.token_list[task_id]
@@ -152,14 +159,23 @@ class FinetuneOWSM(LightningModule):
                 outputs[metric_name] = 0.0
             else:
                 outputs[metric_name] = metric([hyp], [ref]).item()
-        outputs.update({"task": task, "lang": lang, "ref": ref, "hyp": hyp})
+        outputs.update({
+            "task": task,
+            "lang": lang,
+            "ref": ref,
+            "hyp": hyp,
+            "audio_file": audio_filename
+        })
         self._test_outputs.append(outputs)
 
     def on_test_epoch_end(self):
         assert self.trainer.num_devices < 2
         df = pd.DataFrame(self._test_outputs)
         df.to_csv(Path(self.trainer.log_dir) / "test_inference.csv")
-        self._log_items("test", df, verbose=True).to_csv(Path(self.trainer.log_dir) / "test_metrics.csv")
+        
+        numeric_df = df.drop(columns=["audio_file"]) # _log_items can't handle non-numeric columns
+        metrics_df_to_log = self._log_items("test", numeric_df, verbose=True)
+        metrics_df_to_log.to_csv(Path(self.trainer.log_dir) / "test_metrics.csv")
 
     def configure_optimizers(self):
         return torch.optim.AdamW(self.parameters(), lr=self.lr)

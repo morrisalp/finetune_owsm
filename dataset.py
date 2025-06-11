@@ -33,8 +33,13 @@ class FieldworkDataset(Dataset):
 
     def __getitem__(self, index):
         row = self.data[index].copy()
-        row["speech"], _ = librosa.load(row["speech"], mono=True, sr=16_000)
-        uid = f"{index:08d}"
+        
+        audio_path = row["speech"]
+        row["speech"], _ = librosa.load(audio_path, mono=True, sr=16_000)
+        audio_filename = Path(audio_path).name
+        
+        uid = f"{index:08d}_{audio_filename}"
+
         return uid, self.preprocessor(uid=uid, data=row)
 
     def _parse_data(self, root, tasks, langs):

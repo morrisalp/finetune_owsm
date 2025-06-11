@@ -83,9 +83,19 @@ python evaluate_model.py \
 
 Can specify languages and/or tasks, e.g. `--langs beja1238 --tasks transcription`.
 
+Note: Saves CSV of qualitative results and metrics to `$PATH_TO_CKPT/../lightning_logs/version_N/lightning_logs`, and outputs metrics summary to stdout.
+
 ## CHANGELOG: Recent Updates
 
 * Update installation with missing dependencies and avoid script that corrupts current conda env
 * Add flag for dataloader workers (`--num_workers`) and lower default to avoid errors with too many open files
 * Fix `--langs` and `--tasks` for evaluation.
 * Fix swapped "seen" and "unseen" labels in evaluation output.
+* Include audio filename column in qualitative eval CSV
+
+## TODO
+
+* Save eval CSVs in better location
+* Optionally reduce dataloaders for multilingual data
+* Use batching and optional random subsets in eval for faster runtime
+* Eval -- progressively log by language so partial results are visible
