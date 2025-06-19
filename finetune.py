@@ -31,6 +31,8 @@ class FinetuneOWSM(LightningModule):
     ):
         super().__init__()
 
+        self.save_hyperparameters()
+
         self.s2t = Speech2Text.from_pretrained(model_name)
         self.model = self.s2t.s2t_model
 
